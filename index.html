@@ -1,8 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>OpenLayers Map</title>
-    </head>
-        <script src="https://www.openlayers.org/api/OpenLayers.js"></script>
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+	<script src="https://www.openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript">
             var lon = 18.64542;
             var lat = 54.34766;
@@ -83,8 +83,9 @@
 				
 				map.addLayer(layer_marker);
             }
-
         </script>
+    </head>
+        
     <body onload="init()">
             <div id="map"></div>
     </body>
