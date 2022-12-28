@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>OpenLayers Map</title>
+
+        <!-- The openlayers script -->
+        <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var lon = 18.64542;
+            var lat = 54.34766;
+            var zoom = 5;
+            var map;
+            var mercator = new OpenLayers.Projection("EPSG:900913");
+            var wgs84 = new OpenLayers.Projection("EPSG:4326"); 
+            var apiKey = "ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp";
+            var options = { projection: mercator, displayProjection: wgs84 };
+			let opacity = 0.5;
+
+
+            function init(){
+                map = new OpenLayers.Map('map', options);
+                
+                var osm = new OpenLayers.Layer.OSM("Simple OSM Map");
+
+                //map.addLayers([osm]);
+                map.zoomIn();
+				
+				let layer_road = new OpenLayers.Layer.Bing({
+				    name: "Road Layer",
+				    key: apiKey,
+				    type: "Road"
+				});
+				
+				let layer_aerial = new OpenLayers.Layer.Bing({
+				    name: "Aerial Layer",
+				    key: apiKey,
+				    type: "Aerial"
+				});
+				
+				let layer_labels = new OpenLayers.Layer.Bing({
+				    name: "AerialWithLabels Layer",
+				    key: apiKey,
+				    type: "AerialWithLabels"
+				});
+				
+				map.addLayers([osm, layer_road, layer_labels, layer_aerial]);
+				
+				map.addControl(new OpenLayers.Control.LayerSwitcher());
+				map.addControl(new OpenLayers.Control.PanZoomBar());
+				map.addControl(new OpenLayers.Control.ScaleLine());
+				map.addControl(new OpenLayers.Control.OverviewMap());
+				map.addControl(new OpenLayers.Control.KeyboardDefaults());
+				map.addControl(new OpenLayers.Control.MousePosition());
+				map.addControl(new OpenLayers.Control.MousePosition());
+				
+				map.setCenter((new OpenLayers.LonLat(lon, lat)).transform(wgs84, mercator), zoom);
+				
+				let layer_wms = new OpenLayers.Layer.WMS(
+					"WMS Layer",
+					"http://ksg.eti.pg.gda.pl/geoserver/gis/wms",
+					{layers: '2014_07_25_Baltic_Cyano', transparent: true},
+					{isBaseLayer:false}
+				);
+				
+				layer_wms.setOpacity(opacity);
+				
+				map.addLayer(layer_wms);
+				
+				let vectors = new OpenLayers.Layer.Vector("Vector Layer")
+				map.addControl(new OpenLayers.Control.EditingToolbar(vectors));
+				map.addLayer(vectors);
+				
+				let layer_marker = new OpenLayers.Layer.Markers("Marker Layer");
+				
+				let lonlat1 = new OpenLayers.LonLat(18.606668395032152, 54.383641804885265).transform(wgs84, mercator);
+				let lonlat2 = new OpenLayers.LonLat(21.01633242233835, 52.25109808706585).transform(wgs84, mercator);
+				let lonlat3 = new OpenLayers.LonLat(16.89457557695791, 52.46444563546422).transform(wgs84, mercator);
+				let marker1 = new OpenLayers.Marker(lonlat1);
+				let marker2 = new OpenLayers.Marker(lonlat2);
+				let marker3 = new OpenLayers.Marker(lonlat3);
+				
+				layer_marker.addMarker(marker1);
+				layer_marker.addMarker(marker2);
+				layer_marker.addMarker(marker3);
+				
+				map.addLayer(layer_marker);
+            }
+
+        </script>
+    </head>
+    <body onload="init()">
+            <div id="map"></div>
+    </body>
+</html>
